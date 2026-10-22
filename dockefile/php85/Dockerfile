@@ -1,6 +1,5 @@
 FROM php:8.5.12-fpm-alpine
 
-ENV PECL_MIRROR_URL=https://mirrors.aliyun.com/pecl
 
 # 1. 更新apk源 + 安装系统依赖；telnet替换busybox-extras
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
