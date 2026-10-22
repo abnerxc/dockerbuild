@@ -31,7 +31,10 @@ RUN pecl install -o -f xdebug-3.5.1 && docker-php-ext-enable xdebug
 # redis升级7.3.0，修复php8.5头文件缺失
 RUN pecl install -o -f redis-7.3.0 && docker-php-ext-enable redis
 
-RUN pecl install -o -f memcached-3.3.0 && docker-php-ext-enable memcached
+RUN curl -fsSL https://github.com/php-memcached-dev/php-memcached/archive/refs/heads/main.tar.gz -o memcached.tar.gz \
+    && mkdir -p /tmp/memcached && tar -xf memcached.tar.gz -C /tmp/memcached --strip-components=1 \
+    && docker-php-ext-configure /tmp/memcached \
+    && docker-php-ext-install /tmp/memcached
 
 RUN pecl install -o -f mongodb-1.20.0 && docker-php-ext-enable mongodb
 
