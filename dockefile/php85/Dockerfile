@@ -46,7 +46,6 @@ RUN pecl install -o -f amqp-2.2.0 && docker-php-ext-enable amqp
 
 RUN pecl install -o -f rdkafka-6.0.5 && docker-php-ext-enable rdkafka
 
-# ========== 外部源码编译 tideways xhprof ==========
 RUN pecl install -o -f xhprof-2.3.10 && docker-php-ext-enable xhprof
 
 # ========== 安装phar工具 composer / php‑cs‑fixer / phpunit ==========
