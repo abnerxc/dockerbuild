@@ -7,12 +7,16 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     && apk update \
     && apk add --no-cache linux-headers g++ make librdkafka-dev libmemcached-dev freetype-dev libjpeg-turbo-dev libpng-dev curl icu-dev libxml2-dev libxslt-dev bzip2-dev gettext-dev openssl autoconf pkgconfig libssh-dev ffmpeg libwebp-dev yasm ffmpeg-dev libzip-dev oniguruma-dev rabbitmq-c rabbitmq-c-dev busybox-extras
 
-# 【重要】gd单独编译，docker-php-ext-configure会改变工作目录，不能和其他扩展批量放一起
+# gd 单独编译
 RUN docker-php-ext-configure gd --with-webp=/usr/include/webp --with-jpeg=/usr/include --with-freetype=/usr/include/freetype2/ \
     && docker-php-ext-install gd
 
-# 其余原生PHP扩展批量编译（此时工作目录正常）
-RUN docker-php-ext-install intl soap xsl bz2 zip pcntl pdo_mysql mysqli mbstring exif bcmath calendar sockets gettext shmop sysvmsg sysvsem sysvshm opcache
+# 分组编译原生扩展，每组不要太多
+RUN docker-php-ext-install intl soap xsl bz2 zip
+
+RUN docker-php-ext-install pcntl pdo_mysql mysqli mbstring exif bcmath
+
+RUN docker-php-ext-install calendar sockets gettext shmop sysvmsg sysvsem sysvshm opcache
 
 # 3. 初始化pecl，安装编译依赖包(PHPIZE_DEPS)
 RUN pecl channel-update pecl.php.net \
