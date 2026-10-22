@@ -2,10 +2,10 @@ FROM php:8.5.12-fpm-alpine
 
 ENV PECL_MIRROR_URL=https://mirrors.aliyun.com/pecl
 
-# 1. 更新apk源 + 安装系统依赖
+# 1. 更新apk源 + 安装系统依赖；⚠️把telnet替换成busybox-extras
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
     && apk update \
-    && apk add --no-cache linux-headers g++ make librdkafka-dev libmemcached-dev freetype-dev libjpeg-turbo-dev libpng-dev curl icu-dev libxml2-dev libxslt-dev bzip2-dev gettext-dev openssl autoconf pkgconfig libssh-dev ffmpeg libwebp-dev yasm ffmpeg-dev libzip-dev oniguruma-dev rabbitmq-c rabbitmq-c-dev telnet
+    && apk add --no-cache linux-headers g++ make librdkafka-dev libmemcached-dev freetype-dev libjpeg-turbo-dev libpng-dev curl icu-dev libxml2-dev libxslt-dev bzip2-dev gettext-dev openssl autoconf pkgconfig libssh-dev ffmpeg libwebp-dev yasm ffmpeg-dev libzip-dev oniguruma-dev rabbitmq-c rabbitmq-c-dev busybox-extras
 
 # 2. 编译PHP内置扩展（docker-php-ext-install）
 RUN docker-php-ext-configure gd --with-webp=/usr/include/webp --with-jpeg=/usr/include --with-freetype=/usr/include/freetype2/ \
@@ -50,8 +50,7 @@ RUN curl -fsSL --connect-timeout 60 https://github.com/FriendsOfPHP/PHP-CS-Fixer
 RUN curl -fsSL --connect-timeout 60 https://phar.phpunit.de/phpunit-11.phar -o /usr/local/bin/phpunit \
     && chmod u+x /usr/local/bin/phpunit
 
-# 清理（调试版这里先不删除 .phpize-deps，保留编译工具方便看报错；定位完成后生产镜像再apk del）
+# 调试阶段不删除编译依赖，方便看报错；定位完成后生产镜像再打开apk del
 RUN docker-php-source delete \
     && rm -rf /tmp/* /var/lib/apt/lists/* /tmp/pear ~/.pearrc /usr/share/php
-# 调试阶段注释 apk del .phpize-deps，排查完问题再打开
 # RUN apk del .phpize-deps
