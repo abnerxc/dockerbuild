@@ -28,7 +28,8 @@ RUN pecl channel-update pecl.php.net \
 # xdebug 3.5.1 支持PHP8.5
 RUN pecl install -o -f xdebug-3.5.1 && docker-php-ext-enable xdebug
 
-RUN pecl install -o -f redis-6.2.0 && docker-php-ext-enable redis
+# redis升级7.3.0，修复php8.5头文件缺失
+RUN pecl install -o -f redis-7.3.0 && docker-php-ext-enable redis
 
 RUN pecl install -o -f memcached-3.3.0 && docker-php-ext-enable memcached
 
