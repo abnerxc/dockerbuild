@@ -11,12 +11,14 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN docker-php-ext-configure gd --with-webp=/usr/include/webp --with-jpeg=/usr/include --with-freetype=/usr/include/freetype2/ \
     && docker-php-ext-install gd
 
-# 分组编译原生扩展，每组不要太多
+# 分组编译原生扩展，【opcache移除，PHP8.5内核自带】
 RUN docker-php-ext-install intl soap xsl bz2 zip
 
 RUN docker-php-ext-install pcntl pdo_mysql mysqli mbstring exif bcmath
 
-RUN docker-php-ext-install calendar sockets gettext shmop sysvmsg sysvsem sysvshm opcache
+RUN docker-php-ext-install calendar sockets gettext shmop
+
+RUN docker-php-ext-install sysvmsg sysvsem sysvshm
 
 # 3. 初始化pecl，安装编译依赖包(PHPIZE_DEPS)
 RUN pecl channel-update pecl.php.net \
