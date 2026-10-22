@@ -1,4 +1,4 @@
-FROM docker.1ms.run/php:8.5.12-fpm-alpine
+FROM php:8.5.12-fpm-alpine
 
 
 # 1. 更新apk源 + 安装系统依赖；telnet替换busybox-extras
