@@ -2,14 +2,17 @@ FROM php:8.5.12-fpm-alpine
 
 ENV PECL_MIRROR_URL=https://mirrors.aliyun.com/pecl
 
-# 1. 更新apk源 + 安装系统依赖；⚠️把telnet替换成busybox-extras
+# 1. 更新apk源 + 安装系统依赖；telnet替换busybox-extras
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
     && apk update \
     && apk add --no-cache linux-headers g++ make librdkafka-dev libmemcached-dev freetype-dev libjpeg-turbo-dev libpng-dev curl icu-dev libxml2-dev libxslt-dev bzip2-dev gettext-dev openssl autoconf pkgconfig libssh-dev ffmpeg libwebp-dev yasm ffmpeg-dev libzip-dev oniguruma-dev rabbitmq-c rabbitmq-c-dev busybox-extras
 
-# 2. 编译PHP内置扩展（docker-php-ext-install）
+# 【重要】gd单独编译，docker-php-ext-configure会改变工作目录，不能和其他扩展批量放一起
 RUN docker-php-ext-configure gd --with-webp=/usr/include/webp --with-jpeg=/usr/include --with-freetype=/usr/include/freetype2/ \
-    && docker-php-ext-install gd intl soap xsl bz2 zip pcntl pdo_mysql mysqli mbstring exif bcmath calendar sockets gettext shmop sysvmsg sysvsem sysvshm opcache
+    && docker-php-ext-install gd
+
+# 其余原生PHP扩展批量编译（此时工作目录正常）
+RUN docker-php-ext-install intl soap xsl bz2 zip pcntl pdo_mysql mysqli mbstring exif bcmath calendar sockets gettext shmop sysvmsg sysvsem sysvshm opcache
 
 # 3. 初始化pecl，安装编译依赖包(PHPIZE_DEPS)
 RUN pecl channel-update pecl.php.net \
