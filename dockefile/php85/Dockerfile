@@ -47,21 +47,17 @@ RUN pecl install -o -f amqp-2.2.0 && docker-php-ext-enable amqp
 RUN pecl install -o -f rdkafka-6.0.5 && docker-php-ext-enable rdkafka
 
 # ========== 外部源码编译 tideways xhprof ==========
-RUN curl -fsSL --connect-timeout 60 'https://github.com/tideways/php-xhprof-extension/archive/refs/tags/v5.0.4.tar.gz' -o tideways.tar.gz \
-    && mkdir -p /tmp/tideways \
-    && tar -xf tideways.tar.gz -C /tmp/tideways --strip-components=1 \
-    && docker-php-ext-configure /tmp/tideways \
-    && docker-php-ext-install /tmp/tideways
+RUN pecl install -o -f xhprof-2.3.10 && docker-php-ext-enable xhprof
 
 # ========== 安装phar工具 composer / php‑cs‑fixer / phpunit ==========
-RUN curl -fsSL --connect-timeout 60 https://github.com/composer/composer/releases/download/2.8.6/composer.phar -o /usr/local/bin/composer \
+RUN curl -fsSL --connect-timeout 60 https://github.com/composer/composer/releases/download/2.10.3/composer.phar -o /usr/local/bin/composer \
     && chmod u+x /usr/local/bin/composer \
     && composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
-RUN curl -fsSL --connect-timeout 60 https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v3.65.0/php-cs-fixer.phar -o /usr/local/bin/php-cs-fixer \
+RUN curl -fsSL --connect-timeout 60 https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/releases/download/v3.95.27/php-cs-fixer.phar -o /usr/local/bin/php-cs-fixer \
     && chmod u+x /usr/local/bin/php-cs-fixer
 
-RUN curl -fsSL --connect-timeout 60 https://phar.phpunit.de/phpunit-11.phar -o /usr/local/bin/phpunit \
+RUN curl -fsSL --connect-timeout 60 https://phar.phpunit.de/phpunit-13.4.3.phar -o /usr/local/bin/phpunit \
     && chmod u+x /usr/local/bin/phpunit
 
 # 调试阶段不删除编译依赖，方便看报错；定位完成后生产镜像再打开apk del
