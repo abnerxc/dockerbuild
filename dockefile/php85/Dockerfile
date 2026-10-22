@@ -25,7 +25,8 @@ RUN pecl channel-update pecl.php.net \
     && apk add --no-cache --update --virtual .phpize-deps $PHPIZE_DEPS
 
 # ========== 逐个PECL扩展，每条RUN，失败即停 ==========
-RUN pecl install -o -f xdebug-3.4.2 && docker-php-ext-enable xdebug
+# xdebug 3.5.1 支持PHP8.5
+RUN pecl install -o -f xdebug-3.5.1 && docker-php-ext-enable xdebug
 
 RUN pecl install -o -f redis-6.2.0 && docker-php-ext-enable redis
 
