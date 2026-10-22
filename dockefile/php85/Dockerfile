@@ -36,15 +36,15 @@ RUN curl -fsSL https://github.com/php-memcached-dev/php-memcached/archive/refs/h
     && docker-php-ext-configure /tmp/memcached \
     && docker-php-ext-install /tmp/memcached
 
-RUN pecl install -o -f mongodb-1.20.0 && docker-php-ext-enable mongodb
+RUN pecl install -o -f mongodb-2.5.5 && docker-php-ext-enable mongodb
 
-RUN pecl install -o -f swoole-5.1.6 && docker-php-ext-enable swoole
+RUN pecl install -o -f swoole-6.2.3 && docker-php-ext-enable swoole
 
-RUN pecl install -o -f protobuf-3.25.5 && docker-php-ext-enable protobuf
+RUN pecl install -o -f protobuf-5.36.2 && docker-php-ext-enable protobuf
 
-RUN pecl install -o -f amqp-1.12.0 && docker-php-ext-enable amqp
+RUN pecl install -o -f amqp-2.2.0 && docker-php-ext-enable amqp
 
-RUN pecl install -o -f rdkafka-6.0.3 && docker-php-ext-enable rdkafka
+RUN pecl install -o -f rdkafka-6.0.5 && docker-php-ext-enable rdkafka
 
 # ========== 外部源码编译 tideways xhprof ==========
 RUN curl -fsSL --connect-timeout 60 'https://github.com/tideways/php-xhprof-extension/archive/refs/tags/v5.0.4.tar.gz' -o tideways.tar.gz \
